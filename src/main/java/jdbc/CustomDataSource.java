@@ -5,13 +5,10 @@ import javax.sql.DataSource;
 import lombok.Getter;
 import lombok.Setter;
 
-import java.io.IOException;
-import java.io.InputStream;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
-import java.util.Properties;
 import java.util.logging.Logger;
 
 @Getter
@@ -26,30 +23,17 @@ public class CustomDataSource implements DataSource {
     private CustomDataSource(String driver, String url, String password, String name) {
         this.driver = driver;
         this.url = url;
-        this.name = name;
         this.password = password;
+        this.name = name;
     }
 
     public static CustomDataSource getInstance() {
         if (instance == null) {
             synchronized (CustomDataSource.class) {
                 if (instance == null) {
-                    Properties properties = new Properties();
-                    try (InputStream input = CustomDataSource.class.getClassLoader().getResourceAsStream("app.properties")) {
-                        properties.load(input);
-                        instance = new CustomDataSource(
-                                properties.getProperty("db.driver"),
-                                properties.getProperty("db.url"),
-                                properties.getProperty("db.user"),
-                                properties.getProperty("db.password")
-                        );
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
                 }
             }
         }
-
         return instance;
     }
 
@@ -98,3 +82,4 @@ public class CustomDataSource implements DataSource {
         return false;
     }
 }
+
