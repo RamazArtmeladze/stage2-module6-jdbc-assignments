@@ -5,10 +5,12 @@ import javax.sql.DataSource;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.io.IOException;
 import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.sql.SQLFeatureNotSupportedException;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 @Getter
@@ -31,7 +33,18 @@ public class CustomDataSource implements DataSource {
         if (instance == null) {
             synchronized (CustomDataSource.class) {
                 if (instance == null) {
-                    instance = new CustomDataSource("org.postgresql.Driver", "jdbc:postgresql://localhost:5432/myfirstdb", "Paroli123", "postgres");
+                    Properties props = new Properties();
+                    try {
+                        props.load(CustomDataSource.class.getClassLoader().getResourceAsStream("app.properties"));
+                        String driver = props.getProperty("postgres.driver");
+                        String url = props.getProperty("postgres.url");
+                        String name = props.getProperty("postgres.password");
+                        String password = props.getProperty("postgres.name");
+                        instance = new CustomDataSource(driver, url, password, name);
+                        Class.forName(props.getProperty("postgres.driver"));
+                    } catch (IOException | ClassNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 }
             }
         }
@@ -39,48 +52,48 @@ public class CustomDataSource implements DataSource {
     }
 
     @Override
-    public Connection getConnection() throws SQLException {
-        return null;
+    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
+        throw new UnsupportedOperationException("Unimplemented method 'getParentLogger'");
     }
 
     @Override
-    public Connection getConnection(String username, String password) throws SQLException {
-        return null;
+    public boolean isWrapperFor(Class<?> arg0) throws SQLException {
+        throw new UnsupportedOperationException("Unimplemented method 'isWrapperFor'");
+    }
+
+    @Override
+    public <T> T unwrap(Class<T> arg0) throws SQLException {
+        throw new UnsupportedOperationException("Unimplemented method 'unwrap'");
+    }
+
+    @Override
+    public Connection getConnection() throws SQLException {
+        return new CustomConnector().getConnection(url, name, password);
+    }
+
+    @Override
+    public Connection getConnection(String arg0, String arg1) throws SQLException {
+        return new CustomConnector().getConnection(url, name, password);
     }
 
     @Override
     public PrintWriter getLogWriter() throws SQLException {
-        return null;
-    }
-
-    @Override
-    public void setLogWriter(PrintWriter out) throws SQLException {
-
-    }
-
-    @Override
-    public void setLoginTimeout(int seconds) throws SQLException {
-
+        throw new UnsupportedOperationException("Unimplemented method 'getLogWriter'");
     }
 
     @Override
     public int getLoginTimeout() throws SQLException {
-        return 0;
+        throw new UnsupportedOperationException("Unimplemented method 'getLoginTimeout'");
     }
 
     @Override
-    public Logger getParentLogger() throws SQLFeatureNotSupportedException {
-        return null;
+    public void setLogWriter(PrintWriter arg0) throws SQLException {
+        throw new UnsupportedOperationException("Unimplemented method 'setLogWriter'");
     }
 
     @Override
-    public <T> T unwrap(Class<T> iface) throws SQLException {
-        return null;
-    }
-
-    @Override
-    public boolean isWrapperFor(Class<?> iface) throws SQLException {
-        return false;
+    public void setLoginTimeout(int arg0) throws SQLException {
+        throw new UnsupportedOperationException("Unimplemented method 'setLoginTimeout'");
     }
 }
 
