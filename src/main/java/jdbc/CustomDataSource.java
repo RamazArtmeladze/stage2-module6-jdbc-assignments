@@ -31,6 +31,7 @@ public class CustomDataSource implements DataSource {
         if (instance == null) {
             synchronized (CustomDataSource.class) {
                 if (instance == null) {
+                    instance = new CustomDataSource("org.postgresql.Driver", "jdbc:postgresql://localhost:5432/myfirstdb", "Paroli123", "postgres");
                 }
             }
         }
