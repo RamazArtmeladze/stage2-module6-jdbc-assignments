@@ -10,12 +10,20 @@ public class SimpleJDBCRepository {
     private PreparedStatement ps = null;
     private Statement st = null;
 
-    private static final String createUserSQL = "INSERT INTO myusers (firstname, lastname, age) VALUES (?, ?, ?)";
-    private static final String updateUserSQL = "UPDATE myusers SET firstname = ?, lastname = ?, age = ? WHERE id = ?";
-    private static final String deleteUserSQL = "DELETE FROM myusers WHERE id = ?";
-    private static final String findUserByIdSQL = "SELECT * FROM myusers WHERE id = ?";
-    private static final String findUserByNameSQL = "SELECT * FROM myusers WHERE firstname = ? OR lastname = ?";
+    private static final String createUserSQL = "INSERT INTO myusers (firstname, lastname, age) VALUES (ramaz, artmeladze, 27)";
+    private static final String updateUserSQL = "UPDATE myusers SET firstname = nika, lastname = shantadze, age = 25 WHERE id = 1";
+    private static final String deleteUserSQL = "DELETE FROM myusers WHERE id = 1";
+    private static final String findUserByIdSQL = "SELECT * FROM myusers WHERE id = 1";
+    private static final String findUserByNameSQL = "SELECT * FROM myusers WHERE firstname = ramaz OR lastname = artmeladze";
     private static final String findAllUserSQL = "SELECT * FROM myusers";
+
+    public void initConnection() {
+        try {
+            this.connection = CustomDataSource.getInstance().getConnection();
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 
     public Long createUser(User user) {
         try (Connection connection = CustomDataSource.getInstance().getConnection();
@@ -34,7 +42,6 @@ public class SimpleJDBCRepository {
                 }
             }
         } catch (SQLException e) {
-            // Handle exceptions
         }
         return null;
     }
@@ -51,7 +58,6 @@ public class SimpleJDBCRepository {
                 return new User(rs.getLong("id"), rs.getString("firstname"), rs.getString("lastname"), rs.getInt("age"));
             }
         } catch (SQLException e) {
-            // Handle exceptions
         }
         return null;
     }
@@ -69,7 +75,6 @@ public class SimpleJDBCRepository {
                 return new User(rs.getLong("id"), rs.getString("firstname"), rs.getString("lastname"), rs.getInt("age"));
             }
         } catch (SQLException e) {
-            // Handle exceptions
         }
         return null;
     }
@@ -85,7 +90,6 @@ public class SimpleJDBCRepository {
                 users.add(new User(rs.getLong("id"), rs.getString("firstname"), rs.getString("lastname"), rs.getInt("age")));
             }
         } catch (SQLException e) {
-            // Handle exceptions
         }
         return users;
     }
@@ -105,7 +109,6 @@ public class SimpleJDBCRepository {
                 return user;
             }
         } catch (SQLException e) {
-            // Handle exceptions
         }
         return null;
     }
@@ -118,7 +121,6 @@ public class SimpleJDBCRepository {
             ps.setLong(1, userId);
             ps.executeUpdate();
         } catch (SQLException e) {
-            // Handle exceptions
         }
     }
 
